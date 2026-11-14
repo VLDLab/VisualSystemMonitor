@@ -23,5 +23,18 @@
     <ClInclude Include="MyForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Header Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\app.ico">
+      <Filter>Header Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
