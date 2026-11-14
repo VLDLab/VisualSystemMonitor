@@ -257,8 +257,10 @@ namespace VisualSystemMonitor {
 			this->Controls->Add(this->btn_memory);
 			this->Controls->Add(this->btn_disc);
 			this->Controls->Add(this->btn_network);
-			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
+			this->MaximizeBox = false;
+			this->MinimizeBox = false;
 			this->Name = L"MyForm";
 			this->Text = L"System Monitor";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
