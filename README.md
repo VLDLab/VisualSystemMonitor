@@ -9,10 +9,17 @@
 
 ---
 
-## 📸 Скриншот
+## 📸 Скриншот прошлого дизайна
 
 
-![Visual System Monitor UI](photo_2026-11-15_19-10-14.jpg)
+![Visual System Monitor old UI](assets/old.jpg)
+
+
+
+## 📸 Скриншот нового дизайна
+
+
+![Visual System Monitor new UI](assets/new.jpg)
 
 ---
 
