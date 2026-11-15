@@ -79,11 +79,23 @@ namespace VisualSystemMonitor {
 	private: System::Windows::Forms::Button^ btn_memory;
 
 	private: System::Windows::Forms::Button^ btn_cpu;
-	private: System::Windows::Forms::Label^ vldlab;
+
 	private: System::Windows::Forms::Label^ info_window;
-	private: System::Windows::Forms::Button^ btn_close;
+
 	private: System::Windows::Forms::Button^ btn_author;
 	private: System::Windows::Forms::Button^ btn_system;
+	private: System::Windows::Forms::Label^ vldlab;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart2;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart3;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::Panel^ panel1;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chartCPU;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chartMemory;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chartGPU;
+	private: System::Windows::Forms::Timer^ updateTimer;
 
 
 
@@ -93,6 +105,9 @@ namespace VisualSystemMonitor {
 	protected:
 
 	private:
+		[System::Runtime::InteropServices::DllImport("gdi32.dll")]
+			static System::IntPtr CreateRoundRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect, int nWidthEllipse, int nHeightEllipse);
+			
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -105,158 +120,309 @@ namespace VisualSystemMonitor {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea3 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->btn_network = (gcnew System::Windows::Forms::Button());
 			this->btn_disc = (gcnew System::Windows::Forms::Button());
 			this->btn_memory = (gcnew System::Windows::Forms::Button());
 			this->btn_cpu = (gcnew System::Windows::Forms::Button());
-			this->vldlab = (gcnew System::Windows::Forms::Label());
 			this->info_window = (gcnew System::Windows::Forms::Label());
-			this->btn_close = (gcnew System::Windows::Forms::Button());
 			this->btn_author = (gcnew System::Windows::Forms::Button());
 			this->btn_system = (gcnew System::Windows::Forms::Button());
+			this->vldlab = (gcnew System::Windows::Forms::Label());
+			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
+			this->chart2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
+			this->chart3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart2))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart3))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// btn_network
 			// 
+			this->btn_network->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(46)), static_cast<System::Int32>(static_cast<System::Byte>(46)),
+				static_cast<System::Int32>(static_cast<System::Byte>(63)));
 			this->btn_network->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_network->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->btn_network->Font = (gcnew System::Drawing::Font(L"Calibri", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->btn_network->Location = System::Drawing::Point(506, 122);
+			this->btn_network->FlatAppearance->BorderSize = 0;
+			this->btn_network->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->btn_network->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btn_network->ForeColor = System::Drawing::Color::White;
+			this->btn_network->Location = System::Drawing::Point(60, 431);
 			this->btn_network->Name = L"btn_network";
 			this->btn_network->Size = System::Drawing::Size(191, 81);
 			this->btn_network->TabIndex = 1;
-			this->btn_network->Text = L"Показать информацию о сети";
-			this->btn_network->UseVisualStyleBackColor = true;
+			this->btn_network->Text = L"Network\ninformation";
+			this->btn_network->UseVisualStyleBackColor = false;
 			this->btn_network->Click += gcnew System::EventHandler(this, &MyForm::btn_network_Click);
 			// 
 			// btn_disc
 			// 
+			this->btn_disc->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(46)), static_cast<System::Int32>(static_cast<System::Byte>(46)),
+				static_cast<System::Int32>(static_cast<System::Byte>(63)));
 			this->btn_disc->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_disc->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->btn_disc->Font = (gcnew System::Drawing::Font(L"Calibri", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->btn_disc->Location = System::Drawing::Point(84, 122);
+			this->btn_disc->FlatAppearance->BorderSize = 0;
+			this->btn_disc->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->btn_disc->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btn_disc->ForeColor = System::Drawing::Color::White;
+			this->btn_disc->Location = System::Drawing::Point(60, 344);
 			this->btn_disc->Name = L"btn_disc";
 			this->btn_disc->Size = System::Drawing::Size(191, 81);
 			this->btn_disc->TabIndex = 2;
-			this->btn_disc->Text = L"Показать информацию о дисках";
-			this->btn_disc->UseVisualStyleBackColor = true;
+			this->btn_disc->Text = L"Disk information";
+			this->btn_disc->UseVisualStyleBackColor = false;
 			this->btn_disc->Click += gcnew System::EventHandler(this, &MyForm::btn_disc_Click);
 			// 
 			// btn_memory
 			// 
+			this->btn_memory->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(46)), static_cast<System::Int32>(static_cast<System::Byte>(46)),
+				static_cast<System::Int32>(static_cast<System::Byte>(63)));
 			this->btn_memory->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_memory->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->btn_memory->Font = (gcnew System::Drawing::Font(L"Calibri", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->btn_memory->Location = System::Drawing::Point(506, 26);
+			this->btn_memory->FlatAppearance->BorderSize = 0;
+			this->btn_memory->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->btn_memory->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btn_memory->ForeColor = System::Drawing::Color::White;
+			this->btn_memory->Location = System::Drawing::Point(60, 257);
 			this->btn_memory->Name = L"btn_memory";
 			this->btn_memory->Size = System::Drawing::Size(191, 81);
 			this->btn_memory->TabIndex = 3;
-			this->btn_memory->Text = L"Показать информацию о памяти";
-			this->btn_memory->UseVisualStyleBackColor = true;
+			this->btn_memory->Text = L"Memory\ninformation";
+			this->btn_memory->UseVisualStyleBackColor = false;
 			this->btn_memory->Click += gcnew System::EventHandler(this, &MyForm::btn_memory_Click);
 			// 
 			// btn_cpu
 			// 
+			this->btn_cpu->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(46)), static_cast<System::Int32>(static_cast<System::Byte>(46)),
+				static_cast<System::Int32>(static_cast<System::Byte>(63)));
 			this->btn_cpu->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_cpu->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->btn_cpu->Font = (gcnew System::Drawing::Font(L"Calibri", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->btn_cpu->Location = System::Drawing::Point(293, 26);
+			this->btn_cpu->FlatAppearance->BorderSize = 0;
+			this->btn_cpu->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->btn_cpu->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btn_cpu->ForeColor = System::Drawing::Color::White;
+			this->btn_cpu->Location = System::Drawing::Point(60, 170);
 			this->btn_cpu->Name = L"btn_cpu";
 			this->btn_cpu->Size = System::Drawing::Size(191, 81);
 			this->btn_cpu->TabIndex = 4;
-			this->btn_cpu->Text = L"Показать информацию о процессоре";
-			this->btn_cpu->UseVisualStyleBackColor = true;
+			this->btn_cpu->Text = L"Processor\ninformation";
+			this->btn_cpu->UseVisualStyleBackColor = false;
 			this->btn_cpu->Click += gcnew System::EventHandler(this, &MyForm::btn_cpu_Click);
-			// 
-			// vldlab
-			// 
-			this->vldlab->AutoSize = true;
-			this->vldlab->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->vldlab->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(166)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
-				static_cast<System::Int32>(static_cast<System::Byte>(156)));
-			this->vldlab->Location = System::Drawing::Point(336, 142);
-			this->vldlab->Name = L"vldlab";
-			this->vldlab->Size = System::Drawing::Size(108, 32);
-			this->vldlab->TabIndex = 5;
-			this->vldlab->Text = L"VLDlab";
 			// 
 			// info_window
 			// 
+			this->info_window->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(25)), static_cast<System::Int32>(static_cast<System::Byte>(25)),
+				static_cast<System::Int32>(static_cast<System::Byte>(25)));
 			this->info_window->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
 			this->info_window->FlatStyle = System::Windows::Forms::FlatStyle::System;
 			this->info_window->Font = (gcnew System::Drawing::Font(L"Microsoft Tai Le", 10.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->info_window->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(16)), static_cast<System::Int32>(static_cast<System::Byte>(247)),
 				static_cast<System::Int32>(static_cast<System::Byte>(0)));
-			this->info_window->Location = System::Drawing::Point(81, 225);
+			this->info_window->Location = System::Drawing::Point(324, 78);
 			this->info_window->Name = L"info_window";
-			this->info_window->Size = System::Drawing::Size(616, 363);
+			this->info_window->Size = System::Drawing::Size(448, 434);
 			this->info_window->TabIndex = 6;
-			// 
-			// btn_close
-			// 
-			this->btn_close->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_close->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->btn_close->Font = (gcnew System::Drawing::Font(L"Calibri", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->btn_close->Location = System::Drawing::Point(84, 603);
-			this->btn_close->Name = L"btn_close";
-			this->btn_close->Size = System::Drawing::Size(115, 49);
-			this->btn_close->TabIndex = 7;
-			this->btn_close->Text = L"Закрыть";
-			this->btn_close->UseVisualStyleBackColor = true;
-			this->btn_close->Click += gcnew System::EventHandler(this, &MyForm::btn_close_Click);
 			// 
 			// btn_author
 			// 
+			this->btn_author->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(46)), static_cast<System::Int32>(static_cast<System::Byte>(46)),
+				static_cast<System::Int32>(static_cast<System::Byte>(63)));
 			this->btn_author->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_author->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->btn_author->Font = (gcnew System::Drawing::Font(L"Calibri", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->btn_author->Location = System::Drawing::Point(582, 603);
+			this->btn_author->FlatAppearance->BorderSize = 0;
+			this->btn_author->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->btn_author->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 13.8F));
+			this->btn_author->ForeColor = System::Drawing::Color::White;
+			this->btn_author->Location = System::Drawing::Point(60, 518);
 			this->btn_author->Name = L"btn_author";
-			this->btn_author->Size = System::Drawing::Size(115, 49);
+			this->btn_author->Size = System::Drawing::Size(191, 81);
 			this->btn_author->TabIndex = 8;
-			this->btn_author->Text = L"Про автора";
-			this->btn_author->UseVisualStyleBackColor = true;
+			this->btn_author->Text = L"About ";
+			this->btn_author->UseVisualStyleBackColor = false;
 			this->btn_author->Click += gcnew System::EventHandler(this, &MyForm::btn_author_Click);
 			// 
 			// btn_system
 			// 
+			this->btn_system->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(46)), static_cast<System::Int32>(static_cast<System::Byte>(46)),
+				static_cast<System::Int32>(static_cast<System::Byte>(63)));
 			this->btn_system->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btn_system->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->btn_system->Font = (gcnew System::Drawing::Font(L"Calibri", 10.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->btn_system->Location = System::Drawing::Point(81, 26);
+			this->btn_system->FlatAppearance->BorderSize = 0;
+			this->btn_system->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->btn_system->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btn_system->ForeColor = System::Drawing::Color::White;
+			this->btn_system->Location = System::Drawing::Point(60, 83);
 			this->btn_system->Name = L"btn_system";
 			this->btn_system->Size = System::Drawing::Size(191, 81);
 			this->btn_system->TabIndex = 9;
-			this->btn_system->Text = L"Показать информацию о системе";
-			this->btn_system->UseVisualStyleBackColor = true;
+			this->btn_system->Text = L"General Info";
+			this->btn_system->UseVisualStyleBackColor = false;
 			this->btn_system->Click += gcnew System::EventHandler(this, &MyForm::btn_system_Click);
+			// 
+			// vldlab
+			// 
+			this->vldlab->AutoSize = true;
+			this->vldlab->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 16.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->vldlab->ForeColor = System::Drawing::Color::White;
+			this->vldlab->Location = System::Drawing::Point(57, 27);
+			this->vldlab->Name = L"vldlab";
+			this->vldlab->Size = System::Drawing::Size(194, 31);
+			this->vldlab->TabIndex = 5;
+			this->vldlab->Text = L"System Monitor";
+			// 
+			// panel1
+			// 
+			this->panel1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(196)), static_cast<System::Int32>(static_cast<System::Byte>(196)),
+				static_cast<System::Int32>(static_cast<System::Byte>(196)));
+			this->panel1->Location = System::Drawing::Point(306, 63);
+			this->panel1->Name = L"panel1";
+			this->panel1->Size = System::Drawing::Size(481, 462);
+			this->panel1->TabIndex = 10;
+			// 
+			// chart1
+			// 
+			this->chart1->BackColor = System::Drawing::Color::Transparent;
+			chartArea1->AxisX->MajorGrid->Enabled = false;
+			chartArea1->AxisY->MajorGrid->Enabled = false;
+			chartArea1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(37)), static_cast<System::Int32>(static_cast<System::Byte>(37)),
+				static_cast<System::Int32>(static_cast<System::Byte>(37)));
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
+			legend1->Enabled = false;
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
+			this->chart1->Location = System::Drawing::Point(851, 46);
+			this->chart1->Name = L"chart1";
+			series1->ChartArea = L"ChartArea1";
+			series1->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+			series1->Legend = L"Legend1";
+			series1->Name = L"Series1";
+			this->chart1->Series->Add(series1);
+			this->chart1->Size = System::Drawing::Size(225, 149);
+			this->chart1->TabIndex = 11;
+			this->chart1->Text = L"chart1";
+			this->chart1->Click += gcnew System::EventHandler(this, &MyForm::chart1_Click);
+			// 
+			// chart2
+			// 
+			this->chart2->BackColor = System::Drawing::Color::Transparent;
+			chartArea2->AxisX->MajorGrid->Enabled = false;
+			chartArea2->AxisY->MajorGrid->Enabled = false;
+			chartArea2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(37)), static_cast<System::Int32>(static_cast<System::Byte>(37)),
+				static_cast<System::Int32>(static_cast<System::Byte>(37)));
+			chartArea2->Name = L"ChartArea1";
+			this->chart2->ChartAreas->Add(chartArea2);
+			legend2->Enabled = false;
+			legend2->Name = L"Legend1";
+			this->chart2->Legends->Add(legend2);
+			this->chart2->Location = System::Drawing::Point(851, 214);
+			this->chart2->Name = L"chart2";
+			series2->ChartArea = L"ChartArea1";
+			series2->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+			series2->Legend = L"Legend1";
+			series2->Name = L"Series1";
+			this->chart2->Series->Add(series2);
+			this->chart2->Size = System::Drawing::Size(225, 149);
+			this->chart2->TabIndex = 12;
+			this->chart2->Text = L"chart2";
+			this->chart2->Click += gcnew System::EventHandler(this, &MyForm::chart2_Click);
+			// 
+			// chart3
+			// 
+			this->chart3->BackColor = System::Drawing::Color::Transparent;
+			chartArea3->AxisX->MajorGrid->Enabled = false;
+			chartArea3->AxisY->MajorGrid->Enabled = false;
+			chartArea3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(37)), static_cast<System::Int32>(static_cast<System::Byte>(37)),
+				static_cast<System::Int32>(static_cast<System::Byte>(37)));
+			chartArea3->Name = L"ChartArea1";
+			this->chart3->ChartAreas->Add(chartArea3);
+			legend3->Enabled = false;
+			legend3->Name = L"Legend1";
+			this->chart3->Legends->Add(legend3);
+			this->chart3->Location = System::Drawing::Point(851, 376);
+			this->chart3->Name = L"chart3";
+			series3->ChartArea = L"ChartArea1";
+			series3->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+			series3->Legend = L"Legend1";
+			series3->Name = L"Series1";
+			this->chart3->Series->Add(series3);
+			this->chart3->Size = System::Drawing::Size(225, 149);
+			this->chart3->TabIndex = 13;
+			this->chart3->Text = L"chart3";
+			this->chart3->Click += gcnew System::EventHandler(this, &MyForm::chart3_Click);
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 16.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->ForeColor = System::Drawing::Color::White;
+			this->label1->Location = System::Drawing::Point(948, 27);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(66, 31);
+			this->label1->TabIndex = 14;
+			this->label1->Text = L"CPU";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 16.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label2->ForeColor = System::Drawing::Color::White;
+			this->label2->Location = System::Drawing::Point(929, 193);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(111, 31);
+			this->label2->TabIndex = 15;
+			this->label2->Text = L"Memory";
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Berlin Sans FB", 16.2F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label3->ForeColor = System::Drawing::Color::White;
+			this->label3->Location = System::Drawing::Point(946, 357);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(68, 31);
+			this->label3->TabIndex = 16;
+			this->label3->Text = L"GPU";
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(130)), static_cast<System::Int32>(static_cast<System::Byte>(123)),
-				static_cast<System::Int32>(static_cast<System::Byte>(122)));
-			this->ClientSize = System::Drawing::Size(766, 664);
+			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(52)), static_cast<System::Int32>(static_cast<System::Byte>(62)),
+				static_cast<System::Int32>(static_cast<System::Byte>(97)));
+			this->ClientSize = System::Drawing::Size(1108, 630);
+			this->Controls->Add(this->label3);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->chart3);
+			this->Controls->Add(this->chart2);
+			this->Controls->Add(this->chart1);
 			this->Controls->Add(this->btn_system);
 			this->Controls->Add(this->btn_author);
-			this->Controls->Add(this->btn_close);
 			this->Controls->Add(this->info_window);
 			this->Controls->Add(this->vldlab);
 			this->Controls->Add(this->btn_cpu);
 			this->Controls->Add(this->btn_memory);
 			this->Controls->Add(this->btn_disc);
 			this->Controls->Add(this->btn_network);
+			this->Controls->Add(this->panel1);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MaximizeBox = false;
@@ -264,12 +430,35 @@ namespace VisualSystemMonitor {
 			this->Name = L"MyForm";
 			this->Text = L"System Monitor";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart2))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart3))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+
+
+		this->panel1->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, this->panel1->Width, this->panel1->Height, 20, 20));
+		this->info_window->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, this->info_window->Width, this->info_window->Height, 15, 15));
+		int btnW = this->btn_cpu->Width;
+		int btnH = this->btn_cpu->Height;
+
+		this->btn_cpu->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, btnW, btnH, 34, 34));
+		this->btn_memory->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, btnW, btnH, 34, 34));
+		this->btn_disc->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, btnW, btnH, 34, 34));
+		this->btn_network->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, btnW, btnH, 34, 34));
+		this->btn_system->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, btnW, btnH, 34, 34));
+		this->btn_author->Region = System::Drawing::Region::FromHrgn(CreateRoundRectRgn(0, 0, btnW, btnH, 34, 34));
+
+		this->updateTimer = (gcnew System::Windows::Forms::Timer());
+		this->updateTimer->Interval = 1000; // обновление каждую секунду
+		this->updateTimer->Tick += gcnew System::EventHandler(this, &MyForm::updateTimer_Tick);
+		this->updateTimer->Start();
+
+
 	}
 
 
@@ -413,6 +602,45 @@ private: System::Void btn_network_Click(System::Object^ sender, System::EventArg
 
 	WSACleanup();
 	this->info_window->Text += "-------------------------\n";
+}
+private: System::Void chart3_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void chart2_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void chart1_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void updateTimer_Tick(System::Object^ sender, System::EventArgs^ e) {
+	// Создаем генератор без ключевого слова static, чтобы C++/CLI не ругался
+	System::Random^ rand = gcnew System::Random();
+
+	double cpuVal = rand->Next(10, 90);
+	double memVal = rand->Next(30, 80);
+	double gpuVal = rand->Next(5, 70);
+
+	// --- ОБНОВЛЯЕМ chart1 (CPU) ---
+	if (this->chart1 != nullptr) {
+		this->chart1->Series["Series1"]->Points->AddY(cpuVal);
+		if (this->chart1->Series["Series1"]->Points->Count > 20) {
+			this->chart1->Series["Series1"]->Points->RemoveAt(0);
+		}
+	}
+
+	// --- ОБНОВЛЯЕМ chart2 (Memory) ---
+	if (this->chart2 != nullptr) {
+		this->chart2->Series["Series1"]->Points->AddY(memVal);
+		if (this->chart2->Series["Series1"]->Points->Count > 20) {
+			this->chart2->Series["Series1"]->Points->RemoveAt(0);
+		}
+	}
+
+	// --- ОБНОВЛЯЕМ chart3 (GPU) ---
+	if (this->chart3 != nullptr) {
+		this->chart3->Series["Series1"]->Points->AddY(gpuVal);
+		if (this->chart3->Series["Series1"]->Points->Count > 20) {
+			this->chart3->Series["Series1"]->Points->RemoveAt(0);
+		}
+	}
+
 }
 };
 }
